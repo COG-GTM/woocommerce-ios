@@ -54,7 +54,7 @@ final class ProductsViewController: UIViewController, GhostableViewController {
     /// Top stack view that is shown above the table view as the table header view.
     ///
     private lazy var topStackView: UIStackView = {
-        let subviews = [topBannerContainerView]
+        let subviews = [topBannerContainerView, categoryRailView]
         let stackView = UIStackView(arrangedSubviews: subviews)
         stackView.axis = .vertical
         stackView.spacing = Constants.headerViewSpacing
@@ -118,6 +118,17 @@ final class ProductsViewController: UIViewController, GhostableViewController {
                                      action: #selector(openBulkEditingOptions(sender:)))
         button.isEnabled = false
         return button
+    }()
+
+    /// Merchandising rail with the categories of the products in the list.
+    ///
+    private lazy var categoryRailView: ProductCategoryRailView = {
+        let railView = ProductCategoryRailView()
+        railView.isHidden = true
+        railView.onSelectCategory = { [weak self] category in
+            self?.applyCategoryFilter(category)
+        }
+        return railView
     }()
 
     /// Container of the top banner that shows that the Products feature is still work in progress.
@@ -1068,6 +1079,7 @@ private extension ProductsViewController {
         }
         showOrHideToolbar()
         addOrRemoveOverlay()
+        updateCategoryRail()
         tableView.reloadData()
         onDataReloaded.send(())
     }
@@ -1740,6 +1752,25 @@ private extension ProductsViewController {
 // MARK: - Filter UI Helpers
 //
 private extension ProductsViewController {
+    /// Shows the categories of the products in the list, unless a category filter is already narrowing the list down.
+    ///
+    func updateCategoryRail() {
+        let viewModel = filters.productCategory == nil ?
+            ProductCategoryRailViewModel(products: resultsController.fetchedObjects) :
+            ProductCategoryRailViewModel(products: [])
+        categoryRailView.configure(with: viewModel)
+        tableView?.updateHeaderHeight()
+    }
+
+    func applyCategoryFilter(_ category: ProductCategory) {
+        filters = FilterProductListViewModel.Filters(stockStatus: filters.stockStatus,
+                                                     productStatus: filters.productStatus,
+                                                     promotableProductType: filters.promotableProductType,
+                                                     productCategory: category,
+                                                     favoriteProduct: filters.favoriteProduct,
+                                                     numberOfActiveFilters: filters.numberOfActiveFilters + 1)
+    }
+
     func updateFilterButtonTitle(filters: FilterProductListViewModel.Filters) {
         let activeFilterCount = filters.numberOfActiveFilters
 
