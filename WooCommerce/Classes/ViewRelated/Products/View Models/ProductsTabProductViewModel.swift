@@ -97,6 +97,12 @@ private extension ProductListItem {
             attributedString.addAttributes([.foregroundColor: productStatus.descriptionColor],
                                            range: NSRange(location: 0, length: statusText.count))
         }
+        if let priceText, let priceRange = text.range(of: priceText) {
+            attributedString.addAttributes([
+                .foregroundColor: UIColor.text,
+                .font: StyleManager.footerLabelFont.bold
+            ], range: NSRange(priceRange, in: text))
+        }
         return attributedString
     }
 
