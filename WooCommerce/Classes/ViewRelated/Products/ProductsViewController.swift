@@ -128,6 +128,9 @@ final class ProductsViewController: UIViewController, GhostableViewController {
         railView.onSelectCategory = { [weak self] category in
             self?.applyCategoryFilter(category)
         }
+        railView.onHeightChange = { [weak self] in
+            self?.tableView.updateHeaderHeight()
+        }
         return railView
     }()
 

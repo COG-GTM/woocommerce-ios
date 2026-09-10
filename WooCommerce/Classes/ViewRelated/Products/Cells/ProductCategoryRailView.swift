@@ -8,6 +8,10 @@ final class ProductCategoryRailView: UIView {
     ///
     var onSelectCategory: ((ProductCategory) -> Void)?
 
+    /// Called when the rail height changes, so the container can lay its header out again.
+    ///
+    var onHeightChange: (() -> Void)?
+
     private lazy var scrollView: UIScrollView = {
         let scrollView = UIScrollView(frame: .zero)
         scrollView.showsHorizontalScrollIndicator = false
@@ -24,10 +28,15 @@ final class ProductCategoryRailView: UIView {
     }()
 
     private var categories: [ProductCategory] = []
+    private var viewModel: ProductCategoryRailViewModel?
+    private var minimumHeightConstraint: NSLayoutConstraint?
 
     init() {
         super.init(frame: .zero)
         configureSubviews()
+        registerForTraitChanges([UITraitPreferredContentSizeCategory.self]) { (view: ProductCategoryRailView, _) in
+            view.applyScaledMetrics()
+        }
     }
 
     required init?(coder: NSCoder) {
@@ -35,6 +44,7 @@ final class ProductCategoryRailView: UIView {
     }
 
     func configure(with viewModel: ProductCategoryRailViewModel) {
+        self.viewModel = viewModel
         isHidden = viewModel.isEmpty
         categories = viewModel.items.map { $0.category }
 
@@ -42,7 +52,6 @@ final class ProductCategoryRailView: UIView {
             stackView.removeArrangedSubview($0)
             $0.removeFromSuperview()
         }
-
         for (index, item) in viewModel.items.enumerated() {
             stackView.addArrangedSubview(makeCard(for: item, at: index))
         }
@@ -56,10 +65,32 @@ final class ProductCategoryRailView: UIView {
         scrollView.addSubview(stackView)
         scrollView.pinSubviewToAllEdges(stackView, insets: Constants.contentInsets)
 
+        let minimumHeightConstraint = stackView.heightAnchor.constraint(greaterThanOrEqualToConstant: scaledMinimumCardHeight)
+        self.minimumHeightConstraint = minimumHeightConstraint
+
         NSLayoutConstraint.activate([
-            stackView.heightAnchor.constraint(equalToConstant: Constants.cardHeight),
-            scrollView.heightAnchor.constraint(equalToConstant: Constants.cardHeight + Constants.contentInsets.top + Constants.contentInsets.bottom)
+            minimumHeightConstraint,
+            scrollView.frameLayoutGuide.heightAnchor.constraint(equalTo: stackView.heightAnchor,
+                                                                constant: Constants.contentInsets.top + Constants.contentInsets.bottom)
         ])
+    }
+
+    /// Re-applies the card metrics and text so the rail grows with the preferred content size.
+    ///
+    private func applyScaledMetrics() {
+        minimumHeightConstraint?.constant = scaledMinimumCardHeight
+        if let viewModel {
+            configure(with: viewModel)
+        }
+        onHeightChange?()
+    }
+
+    private var scaledMinimumCardHeight: CGFloat {
+        UIFontMetrics.default.scaledValue(for: Constants.minimumCardHeight, compatibleWith: traitCollection)
+    }
+
+    private var scaledMinimumCardWidth: CGFloat {
+        UIFontMetrics.default.scaledValue(for: Constants.minimumCardWidth, compatibleWith: traitCollection)
     }
 
     private func makeCard(for item: ProductCategoryRailViewModel.Item, at index: Int) -> UIView {
@@ -83,9 +114,11 @@ final class ProductCategoryRailView: UIView {
             .foregroundColor: UIColor.white.withAlphaComponent(Constants.subtitleAlpha)
         ]))
         configuration.titleAlignment = .leading
+        configuration.titleLineBreakMode = .byWordWrapping
+        configuration.subtitleLineBreakMode = .byWordWrapping
         button.configuration = configuration
 
-        button.widthAnchor.constraint(equalToConstant: Constants.cardWidth).isActive = true
+        button.widthAnchor.constraint(greaterThanOrEqualToConstant: scaledMinimumCardWidth).isActive = true
         return button
     }
 
@@ -100,8 +133,8 @@ final class ProductCategoryRailView: UIView {
 private extension ProductCategoryRailView {
     enum Constants {
         static let cardSpacing: CGFloat = 12
-        static let cardWidth: CGFloat = 148
-        static let cardHeight: CGFloat = 96
+        static let minimumCardWidth: CGFloat = 148
+        static let minimumCardHeight: CGFloat = 96
         static let cardCornerRadius: CGFloat = 16
         static let subtitleAlpha: CGFloat = 0.8
         static let contentInsets = UIEdgeInsets(top: 8, left: 16, bottom: 8, right: 16)
