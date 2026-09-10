@@ -363,36 +363,48 @@ extension ScreenshotObjectGraph {
         )
     }
 
+    struct Categories {
+        static let sunglasses = ProductCategory(categoryID: 1, siteID: 1, parentID: 0, name: "Sunglasses", slug: "sunglasses")
+        static let newArrivals = ProductCategory(categoryID: 2, siteID: 1, parentID: 0, name: "New Arrivals", slug: "new-arrivals")
+        static let sale = ProductCategory(categoryID: 3, siteID: 1, parentID: 0, name: "Sale", slug: "sale")
+        static let accessories = ProductCategory(categoryID: 4, siteID: 1, parentID: 0, name: "Accessories", slug: "accessories")
+    }
+
     struct Products {
         static let roseGoldShades = createProduct(
             name: "Rose Gold Shades",
             price: 199.0,
-            quantity: 0
+            quantity: 0,
+            categories: [Categories.sunglasses, Categories.newArrivals]
         )
 
         static let blackCoralShades = createProduct(
             name: "Black Coral Shades",
             price: 150.00,
-            quantity: -24
+            quantity: -24,
+            categories: [Categories.sunglasses, Categories.accessories]
         )
 
         static let malayaShades = createProduct(
             name: "Malaya Shades",
             price: 140.00,
-            quantity: 17
+            quantity: 17,
+            categories: [Categories.sunglasses, Categories.newArrivals]
         )
 
         static let coloradoShades = createProduct(
             name: "Colorado shades",
             price: 135,
             salePrice: 100,
-            quantity: 98
+            quantity: 98,
+            categories: [Categories.sunglasses, Categories.sale]
         )
 
         static let akoyaPearlShades = createProduct(
             name: "Akoya Pearl shades",
             price: 110,
-            quantity: 23
+            quantity: 23,
+            categories: [Categories.accessories, Categories.sale]
         )
     }
 }

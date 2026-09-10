@@ -237,7 +237,8 @@ extension MockObjectGraph {
         salePrice: Decimal? = nil,
         quantity: Decimal,
         siteId: Int64 = 1,
-        image: ProductImage? = nil
+        image: ProductImage? = nil,
+        categories: [ProductCategory] = []
     ) -> Product {
 
         let productId = ProductId.next
@@ -309,7 +310,7 @@ extension MockObjectGraph {
             crossSellIDs: [],
             parentID: 0,
             purchaseNote: nil,
-            categories: [],
+            categories: categories,
             tags: [],
             images: images,
             attributes: [],
