@@ -8,7 +8,8 @@ extension UITabBar {
     ///
     class func applyWooAppearance() {
         let appearance = Self.appearance()
-        appearance.tintColor = .accent
+        appearance.tintColor = .chromeTint
+        appearance.unselectedItemTintColor = .textSubtle
 
         // tab bar needs to be translucent to get rid of the extra space at the bottom of
         // the view controllers embedded in split view.
