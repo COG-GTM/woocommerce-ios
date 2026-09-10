@@ -11,7 +11,7 @@ extension UINavigationBar {
     class func applyWooAppearance() {
         if #available(iOS 26.0, *) {
             let appearance = UINavigationBar.appearance()
-            appearance.tintColor = .accent
+            appearance.tintColor = .chromeTint
             appearance.compactAppearance = nil
             appearance.scrollEdgeAppearance = nil
             appearance.compactScrollEdgeAppearance = nil
@@ -19,7 +19,7 @@ extension UINavigationBar {
         }
 
         let appearance = wooAppearance()
-        UINavigationBar.appearance().tintColor = .accent // The color of bar button items in the navigation bar
+        UINavigationBar.appearance().tintColor = .chromeTint // The color of bar button items in the navigation bar
         UINavigationBar.appearance().standardAppearance = appearance
         UINavigationBar.appearance().compactAppearance = appearance
         UINavigationBar.appearance().scrollEdgeAppearance = appearance
