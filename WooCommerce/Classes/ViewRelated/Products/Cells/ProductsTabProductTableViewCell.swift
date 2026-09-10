@@ -140,7 +140,7 @@ private extension ProductsTabProductTableViewCell {
         let stackView = UIStackView(arrangedSubviews: [productImageView, contentStackView])
         stackView.axis = .horizontal
         stackView.spacing = 16
-        stackView.alignment = .leading
+        stackView.alignment = .center
 
         stackView.translatesAutoresizingMaskIntoConstraints = false
         bottomBorderView.translatesAutoresizingMaskIntoConstraints = false
@@ -184,8 +184,9 @@ private extension ProductsTabProductTableViewCell {
     }
 
     func configureNameLabel() {
-        nameLabel.applyBodyStyle()
-        nameLabel.numberOfLines = 0
+        nameLabel.applyHeadlineStyle()
+        nameLabel.numberOfLines = 2
+        nameLabel.lineBreakMode = .byTruncatingTail
     }
 
     func configureDetailsLabel() {
@@ -194,9 +195,11 @@ private extension ProductsTabProductTableViewCell {
 
     func configureProductImageView() {
         productImageView.applyProductThumbnailStyle()
+        productImageView.layer.cornerRadius = Constants.productImageCornerRadius
+        productImageView.layer.cornerCurve = .continuous
 
-        // This multiplier matches the required size(37.5pt) for a 375pt(as per designs) content view width
-        let widthConstraint = productImageView.widthAnchor.constraint(equalTo: contentView.widthAnchor, multiplier: 0.1)
+        let widthConstraint = productImageView.widthAnchor.constraint(equalTo: contentView.widthAnchor,
+                                                                      multiplier: Constants.productImageWidthMultiplier)
         productImageViewRelationalWidthConstraint = widthConstraint
 
         NSLayoutConstraint.activate([
@@ -275,6 +278,9 @@ private extension ProductsTabProductTableViewCell {
 private extension ProductsTabProductTableViewCell {
     enum Constants {
         static let stackViewInset = CGFloat(16)
+        /// Share of the row width taken by the product image, sized for a merchandising style row.
+        static let productImageWidthMultiplier = CGFloat(0.22)
+        static let productImageCornerRadius = CGFloat(12)
         /// Fixed side length for the square drag-handle icon shown in draggable cells.
         static let draggableIconLength = CGFloat(40)
         static let nameLabelDefaultMinimumHeight = CGFloat(20)
