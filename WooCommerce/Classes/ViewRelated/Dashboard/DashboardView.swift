@@ -101,6 +101,11 @@ struct DashboardView: View {
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .renderedIf(verticalSizeClass == .regular)
 
+                    // Merchandising promotion.
+                    EditorialHeroCardView(onShopTapped: {
+                        MainTabBarController.switchToProductsTab()
+                    })
+
                     // Feature announcement if any.
                     featureAnnouncementCard
 
