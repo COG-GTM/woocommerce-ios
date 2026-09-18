@@ -76,10 +76,37 @@ final class DashboardViewHostingController: UIHostingController<DashboardView> {
             await viewModel.reloadAllData()
         }
     }
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        applyEditorialLargeTitle()
+    }
+
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        applyEditorialLargeTitle()
+    }
 }
 
 // MARK: Private helpers
 private extension DashboardViewHostingController {
+    /// SwiftUI's toolbar modifiers install their own navigation item appearances, which drop the
+    /// editorial large title from the `UINavigationBar` appearance proxy. Put it back on them.
+    ///
+    func applyEditorialLargeTitle() {
+        let attributes = UINavigationBar.editorialLargeTitleTextAttributes()
+        let appearances = [navigationItem.standardAppearance,
+                           navigationItem.scrollEdgeAppearance,
+                           navigationItem.compactAppearance,
+                           navigationItem.compactScrollEdgeAppearance].compactMap { $0 }
+
+        for appearance in appearances {
+            appearance.largeTitleTextAttributes = attributes
+        }
+
+        navigationController?.navigationBar.largeTitleTextAttributes = attributes
+    }
+
     func configureTabBarItem() {
         tabBarItem.image = .statsAltImage
         tabBarItem.title = Localization.title
