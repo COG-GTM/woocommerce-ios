@@ -27,6 +27,13 @@ public extension UIColor {
     ///
     static var brand = UIColor.withColorStudio(.brand)
 
+    /// Chrome tint. Monochrome ink for navigation and tab bar controls, so colour is reserved for merchandising.
+    ///
+    static var chromeTint: UIColor {
+        return UIColor(light: .withColorStudio(.gray, shade: .shade90),
+                       dark: .withColorStudio(.gray, shade: .shade0))
+    }
+
     /// Error. Red-50 (< iOS 13 and Light Mode) and Red-30 (Dark Mode)
     ///
     static var error: UIColor {
