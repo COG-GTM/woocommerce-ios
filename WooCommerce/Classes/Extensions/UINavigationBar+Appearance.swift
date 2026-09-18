@@ -12,8 +12,9 @@ extension UINavigationBar {
         if #available(iOS 26.0, *) {
             let appearance = UINavigationBar.appearance()
             appearance.tintColor = .chromeTint
+            appearance.largeTitleTextAttributes = editorialLargeTitleTextAttributes()
             appearance.compactAppearance = nil
-            appearance.scrollEdgeAppearance = nil
+            appearance.scrollEdgeAppearance = editorialTransparentAppearance()
             appearance.compactScrollEdgeAppearance = nil
             return
         }
@@ -32,7 +33,23 @@ extension UINavigationBar {
         appearance.configureWithOpaqueBackground()
         appearance.backgroundColor = .listForeground(modal: false)
         appearance.titleTextAttributes = [.foregroundColor: UIColor.text]
-        appearance.largeTitleTextAttributes = [.foregroundColor: UIColor.text]
+        appearance.largeTitleTextAttributes = editorialLargeTitleTextAttributes()
+        return appearance
+    }
+
+    /// Editorial treatment for large titles: serif type in the default text color.
+    ///
+    static func editorialLargeTitleTextAttributes() -> [NSAttributedString.Key: Any] {
+        [.foregroundColor: UIColor.text, .font: UIFont.editorialLargeTitle]
+    }
+
+    /// Editorial large titles over the system's transparent bar background.
+    ///
+    static func editorialTransparentAppearance() -> UINavigationBarAppearance {
+        let appearance = UINavigationBarAppearance()
+        appearance.configureWithTransparentBackground()
+        appearance.titleTextAttributes = [.foregroundColor: UIColor.text]
+        appearance.largeTitleTextAttributes = editorialLargeTitleTextAttributes()
         return appearance
     }
 

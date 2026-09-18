@@ -17,6 +17,19 @@ extension UIFont {
         return UIFont(descriptor: descriptor, size: pointSize)
     }
 
+    /// Editorial large title: a serif, Dynamic Type scaled font for navigation bar large titles.
+    ///
+    static var editorialLargeTitle: UIFont {
+        let base = UIFont.preferredFont(forTextStyle: .largeTitle)
+        guard let descriptor = base.fontDescriptor
+            .withDesign(.serif)?
+            .withSymbolicTraits(.traitBold) else {
+            return base.bold
+        }
+
+        return UIFont(descriptor: descriptor, size: base.pointSize)
+    }
+
     /// Returns the receiver *Italics* version.
     ///
     var italics: UIFont {
