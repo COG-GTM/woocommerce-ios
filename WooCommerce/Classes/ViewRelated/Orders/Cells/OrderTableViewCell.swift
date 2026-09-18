@@ -60,6 +60,7 @@ final class OrderTableViewCell: UITableViewCell, SearchResultCell {
         accessibilityIdentifier = viewModel.title
 
         paymentStatusLabel.applyStyle(for: viewModel.status)
+        paymentStatusLabel.font = paymentStatusLabel.font.bold
         paymentStatusLabel.text = viewModel.statusString
 
         if let salesChannel = viewModel.salesChannel, salesChannel == .pointOfSale {
@@ -169,14 +170,22 @@ private extension OrderTableViewCell {
     ///
     func configureLabels() {
         titleLabel.applyBodyStyle()
-        totalLabel.applyBodyStyle()
+        totalLabel.applyHeadlineStyle()
         totalLabel.numberOfLines = 0
         paymentStatusLabel.applyFootnoteStyle()
         paymentStatusLabel.numberOfLines = 0
+        paymentStatusLabel.isCapsule = true
+        paymentStatusLabel.textInsets = Constants.pillInsets
 
         dateCreatedLabel.applyCaption1Style()
 
         salesChannelLabel.applyFootnoteStyle()
         salesChannelLabel.numberOfLines = 1
+        salesChannelLabel.isCapsule = true
+        salesChannelLabel.textInsets = Constants.pillInsets
+    }
+
+    enum Constants {
+        static let pillInsets = UIEdgeInsets(top: 4, left: 10, bottom: 4, right: 10)
     }
 }
