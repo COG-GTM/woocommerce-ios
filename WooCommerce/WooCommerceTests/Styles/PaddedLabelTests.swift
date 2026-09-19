@@ -44,4 +44,20 @@ struct PaddedLabelTests {
         // Then
         #expect(label.layer.cornerRadius == 4)
     }
+
+    @Test func test_corner_radius_when_capsule_is_turned_off_then_rounding_is_removed() {
+        // Given
+        let label = PaddedLabel(frame: CGRect(x: 0, y: 0, width: 120, height: 24))
+        label.isCapsule = true
+        label.layoutIfNeeded()
+
+        // When
+        label.isCapsule = false
+        label.layoutIfNeeded()
+
+        // Then
+        #expect(label.layer.cornerRadius == 0)
+        #expect(label.layer.masksToBounds == false)
+        #expect(label.layer.cornerCurve == .circular)
+    }
 }

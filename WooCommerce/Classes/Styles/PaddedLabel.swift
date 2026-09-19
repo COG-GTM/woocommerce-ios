@@ -13,6 +13,11 @@ class PaddedLabel: UILabel {
     ///
     var isCapsule = false {
         didSet {
+            if oldValue && !isCapsule {
+                layer.masksToBounds = false
+                layer.cornerCurve = .circular
+                layer.cornerRadius = 0
+            }
             setNeedsLayout()
         }
     }

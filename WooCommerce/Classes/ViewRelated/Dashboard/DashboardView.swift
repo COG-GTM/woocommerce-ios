@@ -105,6 +105,7 @@ struct DashboardView: View {
                     EditorialHeroCardView(onShopTapped: {
                         MainTabBarController.switchToProductsTab()
                     })
+                    .renderedIf(viewModel.isEditorialHeroVisible)
 
                     // Feature announcement if any.
                     featureAnnouncementCard
