@@ -9,11 +9,36 @@ class PaddedLabel: UILabel {
     ///
     var textInsets = Constants.defaultInsets
 
+    /// When `true`, the label's corners are fully rounded to a capsule shape.
+    ///
+    var isCapsule = false {
+        didSet {
+            if oldValue && !isCapsule {
+                layer.masksToBounds = false
+                layer.cornerCurve = .circular
+                layer.cornerRadius = 0
+            }
+            setNeedsLayout()
+        }
+    }
+
 
     // MARK: - Overridden Methods
 
     override func drawText(in rect: CGRect) {
         super.drawText(in: rect.inset(by: textInsets))
+    }
+
+    override func layoutSubviews() {
+        super.layoutSubviews()
+
+        guard isCapsule else {
+            return
+        }
+
+        layer.masksToBounds = true
+        layer.cornerCurve = .continuous
+        layer.cornerRadius = bounds.height / 2
     }
 
     override var intrinsicContentSize: CGSize {

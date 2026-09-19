@@ -136,4 +136,9 @@ public enum FeatureFlag: Int, CaseIterable {
     /// Off by default until the stack is ready to enable for internal builds.
     ///
     case starReceiptPrinterSupport
+
+    /// Shows the editorial merchandising hero on the store dashboard.
+    /// Its copy is fixed promotional content, so it stays off in production builds.
+    ///
+    case editorialMerchandisingHero
 }

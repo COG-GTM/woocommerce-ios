@@ -114,6 +114,10 @@ final class DashboardViewModel: ObservableObject {
 
     @Published private(set) var isAIAssistantEligible: Bool = false
 
+    var isEditorialHeroVisible: Bool {
+        featureFlagService.isFeatureFlagEnabled(.editorialMerchandisingHero)
+    }
+
     private var subscriptions: Set<AnyCancellable> = []
 
     /// Dedicated cancellable for client-side banner site observation to prevent accumulation
