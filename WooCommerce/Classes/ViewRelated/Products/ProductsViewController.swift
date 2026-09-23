@@ -1059,6 +1059,7 @@ private extension ProductsViewController {
         guard let tableView else {
             return
         }
+        updateCategoryRail()
         tableView.reloadData()
     }
 

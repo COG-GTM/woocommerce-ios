@@ -5,15 +5,15 @@ import enum WooFoundation.CurrencyCode
 struct Defaults {
     struct Account {
         static let displayName = "My Account"
-        static let email = "woocommercestore@example.com"
+        static let email = "store@nordstrom.example.com"
         static let username = "test account"
     }
 
     struct Site {
-        static let name = "Your WooCommerce Store"
-        static let url = "example.com"
-        static let adminURL = "example.com/wp-admin"
-        static let loginURL = "example.com/wp-login.php"
+        static let name = "Nordstrom"
+        static let url = "nordstrom.example.com"
+        static let adminURL = "nordstrom.example.com/wp-admin"
+        static let loginURL = "nordstrom.example.com/wp-login.php"
     }
 }
 

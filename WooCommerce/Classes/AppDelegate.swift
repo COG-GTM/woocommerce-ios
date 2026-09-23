@@ -194,6 +194,7 @@ extension AppDelegate {
     ///
     func setupWooAppearance() {
         UINavigationBar.applyWooAppearance()
+        UINavigationBar.observeContentSizeCategoryChanges()
         UILabel.applyWooAppearance()
         UITabBar.applyWooAppearance()
     }

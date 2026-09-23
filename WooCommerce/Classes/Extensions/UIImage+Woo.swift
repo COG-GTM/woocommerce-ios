@@ -1097,6 +1097,12 @@ extension UIImage {
         return UIImage.gridicon(.sync)
     }
 
+    /// Store wordmark shown as the store brand lockup
+    ///
+    static var storeWordmark: UIImage {
+        return UIImage(named: "nordstrom-wordmark")!
+    }
+
     /// Stats Alt Icon
     ///
     static var statsAltImage: UIImage {

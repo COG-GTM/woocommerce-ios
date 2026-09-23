@@ -22,4 +22,21 @@ struct UIBarAppearanceTests {
         // Then
         #expect(UINavigationBar.appearance().tintColor?.resolvedColor(with: lightTraits) == UIColor.chromeTint.resolvedColor(with: lightTraits))
     }
+
+    @Test func test_content_size_category_change_when_observed_then_large_title_font_is_rebuilt() {
+        // Given
+        UINavigationBar.applyWooAppearance()
+        UINavigationBar.observeContentSizeCategoryChanges()
+        let originalFont = UINavigationBar.appearance().largeTitleTextAttributes?[.font] as? UIFont
+
+        // When
+        NotificationCenter.default.post(name: UIContentSizeCategory.didChangeNotification, object: nil)
+
+        // Then
+        let rebuiltFont = UINavigationBar.appearance().largeTitleTextAttributes?[.font] as? UIFont
+        #expect(rebuiltFont != nil)
+        #expect(rebuiltFont?.pointSize == UIFont.editorialLargeTitle.pointSize)
+        #expect(rebuiltFont?.fontDescriptor.symbolicTraits.contains(.traitBold) == true)
+        #expect(originalFont?.familyName == rebuiltFont?.familyName)
+    }
 }

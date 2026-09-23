@@ -26,6 +26,13 @@ extension UINavigationBar {
         UINavigationBar.appearance().scrollEdgeAppearance = appearance
     }
 
+    /// Large title attributes hold a font resolved for the current content size category, so they go stale
+    /// when the preferred text size changes while the app is running. Rebuild them when that happens.
+    ///
+    class func observeContentSizeCategoryChanges() {
+        EditorialLargeTitleObserver.shared.startObserving()
+    }
+
     /// Creates the default WC's Appearance
     ///
     class func wooAppearance() -> UINavigationBarAppearance {
@@ -77,6 +84,55 @@ extension UINavigationBar {
         let updatedScrollEdgeAppearance = self.scrollEdgeAppearance ?? UINavigationBar.wooAppearance()
         updatedScrollEdgeAppearance.removeShadow()
         self.scrollEdgeAppearance = updatedScrollEdgeAppearance
+    }
+}
+
+/// Keeps the editorial large title type in step with the preferred content size category.
+///
+private final class EditorialLargeTitleObserver: NSObject {
+    static let shared = EditorialLargeTitleObserver()
+
+    func startObserving() {
+        NotificationCenter.default.removeObserver(self, name: UIContentSizeCategory.didChangeNotification, object: nil)
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(contentSizeCategoryDidChange),
+                                               name: UIContentSizeCategory.didChangeNotification,
+                                               object: nil)
+    }
+
+    @objc private func contentSizeCategoryDidChange() {
+        UINavigationBar.applyWooAppearance()
+        UINavigationBar.refreshEditorialLargeTitles()
+    }
+}
+
+private extension UINavigationBar {
+    /// Appearance proxy changes only reach navigation bars created afterwards, so update the live ones too.
+    ///
+    static func refreshEditorialLargeTitles() {
+        let attributes = editorialLargeTitleTextAttributes()
+        let windows = UIApplication.shared.connectedScenes
+            .compactMap { $0 as? UIWindowScene }
+            .flatMap { $0.windows }
+
+        for navigationBar in windows.flatMap({ navigationBars(in: $0) }) {
+            navigationBar.largeTitleTextAttributes = attributes
+            let appearances = [navigationBar.standardAppearance,
+                               navigationBar.scrollEdgeAppearance,
+                               navigationBar.compactAppearance,
+                               navigationBar.compactScrollEdgeAppearance].compactMap { $0 }
+            for appearance in appearances {
+                appearance.largeTitleTextAttributes = attributes
+            }
+        }
+    }
+
+    static func navigationBars(in view: UIView) -> [UINavigationBar] {
+        if let navigationBar = view as? UINavigationBar {
+            return [navigationBar]
+        }
+
+        return view.subviews.flatMap { navigationBars(in: $0) }
     }
 }
 
