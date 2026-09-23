@@ -165,6 +165,41 @@ final class ProductsTabProductViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.detailsAttributedString.string, "\(Localization.inStock) • $6.00")
     }
 
+    // MARK: Price emphasis
+
+    func test_details_when_price_is_shown_then_price_is_emphasized() {
+        // Given
+        let product = productWith(price: "6")
+
+        // When
+        let viewModel = ProductsTabProductViewModel(product: product,
+                                                    isPriceShown: true,
+                                                    currencySettings: usdCurrencySettings)
+        let details = viewModel.detailsAttributedString
+        let priceRange = (details.string as NSString).range(of: "$6.00")
+
+        // Then
+        let attributes = details.attributes(at: priceRange.location, effectiveRange: nil)
+        XCTAssertEqual(attributes[.font] as? UIFont, StyleManager.footerLabelFont.bold)
+        XCTAssertEqual(attributes[.foregroundColor] as? UIColor, .text)
+    }
+
+    func test_details_when_price_is_shown_then_stock_status_keeps_subtle_styling() {
+        // Given
+        let product = productWith(price: "6")
+
+        // When
+        let viewModel = ProductsTabProductViewModel(product: product,
+                                                    isPriceShown: true,
+                                                    currencySettings: usdCurrencySettings)
+        let details = viewModel.detailsAttributedString
+
+        // Then
+        let attributes = details.attributes(at: 0, effectiveRange: nil)
+        XCTAssertEqual(attributes[.font] as? UIFont, StyleManager.footerLabelFont)
+        XCTAssertEqual(attributes[.foregroundColor] as? UIColor, .textSubtle)
+    }
+
     func test_details_for_product_bundle_contain_bundle_stock_status_when_bundle_not_in_stock() {
         // Given
         let product = Product.fake().copy(productTypeKey: "bundle",

@@ -26,15 +26,41 @@ struct MockProductActionHandler: MockActionHandler {
                 retrieveProduct(siteID: siteID, productID: productID, onCompletion: onCompletion)
             case .retrieveProducts(let siteID, let productIDs, _, _, let onCompletion):
                 retrieveProducts(siteId: siteID, productIds: productIDs, onCompletion: onCompletion)
-            case .synchronizeProducts(let siteID, _, _, _, _, _, _, _, _, let excludedProductIDs, _, let onCompletion):
-                synchronizeProducts(siteID: siteID, excludedProductIDs: excludedProductIDs, onCompletion: onCompletion)
+            case .synchronizeProducts(let siteID,
+                                      let pageNumber,
+                                      _, _, _, _,
+                                      let productCategory,
+                                      _, _,
+                                      let excludedProductIDs,
+                                      let shouldDeleteStoredProductsOnFirstPage,
+                                      let onCompletion):
+                synchronizeProducts(siteID: siteID,
+                                    pageNumber: pageNumber,
+                                    productCategory: productCategory,
+                                    excludedProductIDs: excludedProductIDs,
+                                    shouldDeleteStoredProductsOnFirstPage: shouldDeleteStoredProductsOnFirstPage,
+                                    onCompletion: onCompletion)
             default: unimplementedAction(action: action)
         }
     }
 
-    func synchronizeProducts(siteID: Int64, excludedProductIDs: [Int64], onCompletion: @escaping (Result<Bool, Error>) -> Void) {
+    func synchronizeProducts(siteID: Int64,
+                             pageNumber: Int,
+                             productCategory: ProductCategory?,
+                             excludedProductIDs: [Int64],
+                             shouldDeleteStoredProductsOnFirstPage: Bool,
+                             onCompletion: @escaping (Result<Bool, Error>) -> Void) {
         let products = objectGraph.products(forSiteId: siteID, without: excludedProductIDs)
-        upsert(products: products) {
+            .filter { product in
+                guard let productCategory else {
+                    return true
+                }
+                return product.categories.contains { $0.categoryID == productCategory.categoryID }
+            }
+        let shouldDeleteExistingProducts = pageNumber == Store.Default.firstPageNumber && shouldDeleteStoredProductsOnFirstPage
+        productStore.upsertStoredProductsInBackground(readOnlyProducts: products,
+                                                      siteID: siteID,
+                                                      shouldDeleteExistingProducts: shouldDeleteExistingProducts) {
             /// Indicate that no more products are coming
             onCompletion(.success(false))
         }

@@ -54,7 +54,7 @@ final class ProductsViewController: UIViewController, GhostableViewController {
     /// Top stack view that is shown above the table view as the table header view.
     ///
     private lazy var topStackView: UIStackView = {
-        let subviews = [topBannerContainerView]
+        let subviews = [topBannerContainerView, categoryRailView]
         let stackView = UIStackView(arrangedSubviews: subviews)
         stackView.axis = .vertical
         stackView.spacing = Constants.headerViewSpacing
@@ -118,6 +118,20 @@ final class ProductsViewController: UIViewController, GhostableViewController {
                                      action: #selector(openBulkEditingOptions(sender:)))
         button.isEnabled = false
         return button
+    }()
+
+    /// Merchandising rail with the categories of the products in the list.
+    ///
+    private lazy var categoryRailView: ProductCategoryRailView = {
+        let railView = ProductCategoryRailView()
+        railView.isHidden = true
+        railView.onSelectCategory = { [weak self] category in
+            self?.applyCategoryFilter(category)
+        }
+        railView.onHeightChange = { [weak self] in
+            self?.tableView.updateHeaderHeight()
+        }
+        return railView
     }()
 
     /// Container of the top banner that shows that the Products feature is still work in progress.
@@ -1045,6 +1059,7 @@ private extension ProductsViewController {
         guard let tableView else {
             return
         }
+        updateCategoryRail(with: resultsController)
         tableView.reloadData()
     }
 
@@ -1068,6 +1083,7 @@ private extension ProductsViewController {
         }
         showOrHideToolbar()
         addOrRemoveOverlay()
+        updateCategoryRail()
         tableView.reloadData()
         onDataReloaded.send(())
     }
@@ -1740,6 +1756,27 @@ private extension ProductsViewController {
 // MARK: - Filter UI Helpers
 //
 private extension ProductsViewController {
+    /// Shows the categories of the products in the list, unless a category filter is already narrowing the list down.
+    ///
+    func updateCategoryRail(with resultsController: ResultsController<StorageProduct>? = nil) {
+        // The results controller is passed in while it is still being created, where reading the property would recurse.
+        let resultsController = resultsController ?? self.resultsController
+        let viewModel = filters.productCategory == nil ?
+            ProductCategoryRailViewModel(products: resultsController.fetchedObjects) :
+            ProductCategoryRailViewModel(products: [])
+        categoryRailView.configure(with: viewModel)
+        tableView?.updateHeaderHeight()
+    }
+
+    func applyCategoryFilter(_ category: ProductCategory) {
+        filters = FilterProductListViewModel.Filters(stockStatus: filters.stockStatus,
+                                                     productStatus: filters.productStatus,
+                                                     promotableProductType: filters.promotableProductType,
+                                                     productCategory: category,
+                                                     favoriteProduct: filters.favoriteProduct,
+                                                     numberOfActiveFilters: filters.numberOfActiveFilters + 1)
+    }
+
     func updateFilterButtonTitle(filters: FilterProductListViewModel.Filters) {
         let activeFilterCount = filters.numberOfActiveFilters
 

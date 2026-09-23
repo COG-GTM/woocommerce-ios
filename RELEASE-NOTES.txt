@@ -3,6 +3,8 @@
 
 25.7
 -----
+- [*] Dashboard: The store name at the top of the dashboard is now shown as the store wordmark. [https://github.com/COG-GTM/woocommerce-ios/pull/7]
+- [*] Products, Orders and Dashboard: Refreshed the look with editorial serif large titles, a monochrome navigation and tab bar tint, larger product photos, capsule order status pills, a category rail on the product list and a merchandising hero on the store dashboard. [https://github.com/COG-GTM/woocommerce-ios/pull/7]
 - [***] Age verification: pending or denied parental consent for significant app changes now shows a recoverable blocking screen instead of logging the user out, and consent requests are only sent on explicit user action. Affects the post-login age gate all users pass through — smoke test critical flows, including the sandbox age-assurance scenarios. [https://github.com/woocommerce/woocommerce-ios/pull/17822]
 - [Internal] Age verification: added a declaration file for manual significant changes with parent-facing copy, and the iOS decision matrix doc (docs/age-verification.md). [https://github.com/woocommerce/woocommerce-ios/pull/17826]
 - [Internal] POS: Removed the server-calculated refunds feature flag; the flow is on for every store running WooCommerce 11.1.0 or later. [https://github.com/woocommerce/woocommerce-ios/pull/17836]

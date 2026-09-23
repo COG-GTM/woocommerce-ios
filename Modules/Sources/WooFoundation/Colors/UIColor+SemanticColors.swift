@@ -16,9 +16,23 @@ public extension UIColor {
                        dark: .withColorStudio(.wooCommercePurple, shade: .shade50))
     }
 
+    /// Merchandising. Red-50 (Light Mode) and Red-40 (Dark Mode), for promotional cards and category cards.
+    ///
+    static var merchandising: UIColor {
+        return UIColor(light: .withColorStudio(.red, shade: .shade50),
+                       dark: .withColorStudio(.red, shade: .shade40))
+    }
+
     /// Brand. WooCommercePurple-60 (all versions of iOS, Light and Dark Mode)
     ///
     static var brand = UIColor.withColorStudio(.brand)
+
+    /// Chrome tint. Monochrome ink for navigation and tab bar controls, so colour is reserved for merchandising.
+    ///
+    static var chromeTint: UIColor {
+        return UIColor(light: .withColorStudio(.gray, shade: .shade90),
+                       dark: .withColorStudio(.gray, shade: .shade0))
+    }
 
     /// Error. Red-50 (< iOS 13 and Light Mode) and Red-30 (Dark Mode)
     ///

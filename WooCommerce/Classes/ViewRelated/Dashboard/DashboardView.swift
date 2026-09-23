@@ -94,12 +94,17 @@ struct DashboardView: View {
         GeometryReader { proxy in
             ScrollView {
                 VStack(spacing: Layout.padding) {
-                    // Store title
-                    Text(currentSite?.name ?? Localization.title)
-                        .subheadlineStyle()
+                    // Store brand lockup
+                    StoreWordmarkView(storeName: currentSite?.name ?? Localization.title)
                         .padding(Layout.sectionHeadingPadding)
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .renderedIf(verticalSizeClass == .regular)
+
+                    // Merchandising promotion.
+                    EditorialHeroCardView(onShopTapped: {
+                        MainTabBarController.switchToProductsTab()
+                    })
+                    .renderedIf(viewModel.isEditorialHeroVisible)
 
                     // Feature announcement if any.
                     featureAnnouncementCard
