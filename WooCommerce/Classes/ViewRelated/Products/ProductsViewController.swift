@@ -1059,7 +1059,7 @@ private extension ProductsViewController {
         guard let tableView else {
             return
         }
-        updateCategoryRail()
+        updateCategoryRail(with: resultsController)
         tableView.reloadData()
     }
 
@@ -1758,7 +1758,9 @@ private extension ProductsViewController {
 private extension ProductsViewController {
     /// Shows the categories of the products in the list, unless a category filter is already narrowing the list down.
     ///
-    func updateCategoryRail() {
+    func updateCategoryRail(with resultsController: ResultsController<StorageProduct>? = nil) {
+        // The results controller is passed in while it is still being created, where reading the property would recurse.
+        let resultsController = resultsController ?? self.resultsController
         let viewModel = filters.productCategory == nil ?
             ProductCategoryRailViewModel(products: resultsController.fetchedObjects) :
             ProductCategoryRailViewModel(products: [])
